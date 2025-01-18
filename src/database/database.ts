@@ -35,7 +35,7 @@ export class Database implements DatabaseDriver {
     /**
      * Set a value to the database.
      */
-    set(key: string, value: any): void {
-        this.driver.set(key, value);
+    set(key: string, value: any, event: string): void {
+        this.driver.set(key, value, event);
     };
 }

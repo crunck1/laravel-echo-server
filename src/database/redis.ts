@@ -26,13 +26,14 @@ export class RedisDatabase implements DatabaseDriver {
     /**
      * Store data to cache.
      */
-    set(key: string, value: any): void {
+    set(key: string, value: any, event:string): void {
         this._redis.set(key, JSON.stringify(value));
         if (this.options.databaseConfig.publishPresence === true && /^presence-.*:members$/.test(key)) {
             this._redis.publish('PresenceChannelUpdated', JSON.stringify({
                 "event": {
                     "channel": key,
-                    "members": value
+                    "members": value,
+                    "event": event
                 }
             }));
         }

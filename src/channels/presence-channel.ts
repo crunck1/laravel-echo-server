@@ -62,7 +62,7 @@ export class PresenceChannel {
                         return clients.indexOf(member.socketId) >= 0;
                     });
 
-                    this.db.set(channel + ":members", members);
+                    this.db.set(channel + ":members", members, "remove");
 
                     resolve(members);
                 });
@@ -92,7 +92,7 @@ export class PresenceChannel {
                         member.socketId = socket.id;
                         members.push(member);
 
-                        this.db.set(channel + ":members", members);
+                        this.db.set(channel + ":members", members, "join");
 
                         members = _.uniqBy(members.reverse(), "user_id");
 
@@ -124,7 +124,7 @@ export class PresenceChannel {
                 );
                 members = members.filter((m) => m.socketId != member.socketId);
 
-                this.db.set(channel + ":members", members);
+                this.db.set(channel + ":members", members, "leave");
 
                 this.isMember(channel, member).then((is_member) => {
                     if (!is_member) {
