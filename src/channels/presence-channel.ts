@@ -58,11 +58,14 @@ export class PresenceChannel {
                 .in(channel)
                 .clients((error, clients) => {
                     members = members || [];
+                    const inactiveMembers = members.filter((member) => {
+                        return clients.indexOf(member.socketId) === -1;
+                    });
                     members = members.filter((member) => {
                         return clients.indexOf(member.socketId) >= 0;
                     });
 
-                    this.db.set(channel + ":members", members, "remove");
+                    this.db.set(channel + ":members", members, "remove", inactiveMembers);
 
                     resolve(members);
                 });
@@ -92,7 +95,7 @@ export class PresenceChannel {
                         member.socketId = socket.id;
                         members.push(member);
 
-                        this.db.set(channel + ":members", members, "join");
+                        this.db.set(channel + ":members", members, "join", member);
 
                         members = _.uniqBy(members.reverse(), "user_id");
 
@@ -124,7 +127,7 @@ export class PresenceChannel {
                 );
                 members = members.filter((m) => m.socketId != member.socketId);
 
-                this.db.set(channel + ":members", members, "leave");
+                this.db.set(channel + ":members", members, "leave", member);
 
                 this.isMember(channel, member).then((is_member) => {
                     if (!is_member) {
