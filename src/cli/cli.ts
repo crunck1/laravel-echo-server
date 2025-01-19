@@ -566,13 +566,12 @@ export class Cli {
 
         try {
             data = JSON.parse(fs.readFileSync(file, "utf8"));
-        } catch {
+        } catch(e) {
             console.error(
                 colors.error(
-                    "Error: There was a problem reading the config file."
+                    "Error: There was a problem reading the config file: " + e.message
                 )
             );
-            process.exit();
         }
 
         return this.resolveEnvFileOptions(data);
